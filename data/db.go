@@ -15,20 +15,10 @@ import (
 var DB *gorm.DB
 
 func RunPostgresDB() error {
-	user := os.Getenv("DB_USER")
-	password := os.Getenv("DB_PASS")
-	dbname := os.Getenv("DB_NAME")
-	host := os.Getenv("DB_HOST")
-	port := os.Getenv("DB_PORT")
-
-	if user == "" || password == "" || dbname == "" || host == "" || port == "" {
-		return fmt.Errorf("⚠️ Variables de entorno incompletas para la conexión a la base de datos")
+	dsn := os.Getenv("DATABASE_URL")
+	if dsn == "" {
+		return fmt.Errorf("⚠️ La variable de entorno DATABASE_URL no está configurada")
 	}
-
-	dsn := fmt.Sprintf(
-		"host=%s user=%s password=%s dbname=%s port=%s sslmode=disable",
-		host, user, password, dbname, port,
-	)
 
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Info),
