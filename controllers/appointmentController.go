@@ -30,6 +30,13 @@ func (ac *AppointmentController) RegisterRoutes(r *mux.Router, authMiddleware fu
 	r.Handle("/api/appointments/{id}", authMiddleware(http.HandlerFunc(ac.DeleteAppointment))).Methods("DELETE")
 	r.Handle("/api/appointments/user/{user_id}", authMiddleware(http.HandlerFunc(ac.GetAppointmentsByUser))).Methods("GET")
 	r.Handle("/api/appointments/pet/{pet_id}/history", authMiddleware(http.HandlerFunc(ac.GetMedicalHistoryByPet))).Methods("GET")
+
+	// DASHBOARD ROUTES
+	r.Handle("/api/dashboard/appointments/attended", authMiddleware(http.HandlerFunc(ac.GetCountAttendedAppointments))).Methods("GET")
+	r.Handle("/api/dashboard/appointments/pending", authMiddleware(http.HandlerFunc(ac.GetCountPendingAppointments))).Methods("GET")
+	r.Handle("/api/dashboard/vets/total", authMiddleware(http.HandlerFunc(ac.GetTotalVets))).Methods("GET")
+	r.Handle("/api/dashboard/vets/top", authMiddleware(http.HandlerFunc(ac.GetTopVets))).Methods("GET")
+	r.Handle("/api/dashboard/appointments/monthly_last6months", authMiddleware(http.HandlerFunc(ac.GetAppointmentsByMonthLast6Months))).Methods("GET")
 }
 
 func (ac *AppointmentController) CreateAppointment(w http.ResponseWriter, r *http.Request) {
@@ -248,4 +255,49 @@ func (ac *AppointmentController) DeleteAppointment(w http.ResponseWriter, r *htt
 		return
 	}
 	json.NewEncoder(w).Encode(map[string]string{"message": msg})
+}
+
+func (ac *AppointmentController) GetCountAttendedAppointments(w http.ResponseWriter, r *http.Request) {
+	count, err := ac.Service.CountAppointmentsByStatus(2) // Status 2 = atendidas
+	if err != nil {
+		http.Error(w, "Error obteniendo citas atendidas: "+err.Error(), http.StatusInternalServerError)
+		return
+	}
+	json.NewEncoder(w).Encode(map[string]int{"attended_appointments": count})
+}
+
+func (ac *AppointmentController) GetCountPendingAppointments(w http.ResponseWriter, r *http.Request) {
+	count, err := ac.Service.CountAppointmentsByStatus(1) // Status 1 = pendientes
+	if err != nil {
+		http.Error(w, "Error obteniendo citas pendientes: "+err.Error(), http.StatusInternalServerError)
+		return
+	}
+	json.NewEncoder(w).Encode(map[string]int{"pending_appointments": count})
+}
+
+func (ac *AppointmentController) GetTotalVets(w http.ResponseWriter, r *http.Request) {
+	count, err := ac.Service.CountVets()
+	if err != nil {
+		http.Error(w, "Error obteniendo veterinarios: "+err.Error(), http.StatusInternalServerError)
+		return
+	}
+	json.NewEncoder(w).Encode(map[string]int{"total_vets": count})
+}
+
+func (ac *AppointmentController) GetTopVets(w http.ResponseWriter, r *http.Request) {
+	vets, err := ac.Service.GetVetsWithMostAppointments(5)
+	if err != nil {
+		http.Error(w, "Error obteniendo veterinarios con más citas: "+err.Error(), http.StatusInternalServerError)
+		return
+	}
+	json.NewEncoder(w).Encode(vets)
+}
+
+func (ac *AppointmentController) GetAppointmentsByMonthLast6Months(w http.ResponseWriter, r *http.Request) {
+	results, err := ac.Service.CountAttendedByMonthLast6Months()
+	if err != nil {
+		http.Error(w, "Error obteniendo citas por mes: "+err.Error(), http.StatusInternalServerError)
+		return
+	}
+	json.NewEncoder(w).Encode(results)
 }

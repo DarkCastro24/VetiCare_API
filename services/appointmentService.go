@@ -60,3 +60,19 @@ func (s *AppointmentService) DeleteAppointment(id string) (string, error) {
 	}
 	return "Cita cancelada correctamente", nil
 }
+
+func (s *AppointmentService) CountAppointmentsByStatus(statusID int) (int, error) {
+	return s.Repo.CountAppointmentsByStatus(statusID)
+}
+
+func (s *AppointmentService) CountVets() (int, error) {
+	return s.Repo.CountVets()
+}
+
+func (s *AppointmentService) GetVetsWithMostAppointments(limit int) ([]entities.VetAppointments, error) {
+	return s.Repo.GetVetsWithMostAppointments(limit)
+}
+
+func (s *AppointmentService) CountAttendedByMonthLast6Months() ([]entities.MonthlyAppointments, error) {
+	return s.Repo.CountAttendedByMonthLast6Months()
+}

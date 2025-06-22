@@ -27,6 +27,12 @@ type Appointment struct {
 	UpdatedAt time.Time `gorm:"autoUpdateTime" json:"updated_at"`
 }
 
+type MonthlyAppointments struct {
+	Year  int `json:"year"`
+	Month int `json:"month"`
+	Count int `json:"count"`
+}
+
 func (a *Appointment) BeforeCreate(tx *gorm.DB) (err error) {
 	if a.ID == uuid.Nil {
 		a.ID = uuid.New()

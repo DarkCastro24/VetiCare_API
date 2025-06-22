@@ -22,6 +22,12 @@ type User struct {
 	Role UserRole `gorm:"foreignKey:RoleID;references:ID" json:"role"`
 }
 
+type VetAppointments struct {
+	VetID        string `json:"vet_id"`
+	VetName      string `json:"vet_name"`
+	Appointments int    `json:"appointments"`
+}
+
 func (u *User) BeforeCreate(tx *gorm.DB) (err error) {
 	if u.ID == uuid.Nil {
 		u.ID = uuid.New()

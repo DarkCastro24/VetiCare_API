@@ -78,7 +78,7 @@ func (r *appointmentRepositoryGORM) GetAppointmentsByStatusAndDate(date time.Tim
 	var apps []entities.Appointment
 	dateStr := date.Format("02-01-2006")
 	err := r.db.
-		Where("status_id = 1 or status_id = 2 AND date = ?", dateStr).
+		Where("(status_id = 1 or status_id = 2) AND date = ?", dateStr).
 		Preload("Pet").
 		Preload("Pet.Owner").
 		Preload("Pet.Species").
@@ -131,4 +131,46 @@ func (r *appointmentRepositoryGORM) Delete(id string) (int, error) {
 		return 0, err
 	}
 	return newStatus, nil
+}
+
+func (r *appointmentRepositoryGORM) CountAppointmentsByStatus(statusID int) (int, error) {
+	var count int64
+	err := r.db.Model(&entities.Appointment{}).Where("status_id = ?", statusID).Count(&count).Error
+	return int(count), err
+}
+
+func (r *appointmentRepositoryGORM) CountVets() (int, error) {
+	var count int64
+	err := r.db.Model(&entities.User{}).
+		Where("role_id = ? AND status_id = ?", 2, 1).Count(&count).Error // 2 = vet, 1 = activo
+	return int(count), err
+}
+
+func (r *appointmentRepositoryGORM) GetVetsWithMostAppointments(limit int) ([]entities.VetAppointments, error) {
+	var results []entities.VetAppointments
+	err := r.db.Table("appointments a").
+		Select("a.vet_id as vet_id, u.full_name as vet_name, count(a.id) as appointments").
+		Joins("left join users u on a.vet_id = u.id").
+		Where("a.vet_id IS NOT NULL").
+		Group("a.vet_id, u.full_name").
+		Order("appointments desc").
+		Limit(limit).
+		Scan(&results).Error
+	return results, err
+}
+
+func (r *appointmentRepositoryGORM) CountAttendedByMonthLast6Months() ([]entities.MonthlyAppointments, error) {
+	var results []entities.MonthlyAppointments
+	sixMonthsAgo := time.Now().AddDate(0, -6, 0)
+	err := r.db.
+		Model(&entities.Appointment{}).
+		Select(`EXTRACT(YEAR FROM TO_DATE(date, 'DD-MM-YYYY')) AS year,
+				EXTRACT(MONTH FROM TO_DATE(date, 'DD-MM-YYYY')) AS month,
+				COUNT(*) AS count`).
+		Where("TO_DATE(date, 'DD-MM-YYYY') >= ? AND status_id = ?", sixMonthsAgo, 2).
+		Group("year, month").
+		Order("year DESC, month DESC").
+		Scan(&results).Error
+
+	return results, err
 }
