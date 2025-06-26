@@ -176,17 +176,6 @@ func (ac *AppointmentController) UpdateAppointment(w http.ResponseWriter, r *htt
 		return
 	}
 
-	if val, ok := fields["appointment_datetime"]; ok {
-		if strVal, ok := val.(string); ok {
-			parsedTime, err := time.Parse(time.RFC3339, strVal)
-			if err != nil {
-				http.Error(w, "Formato inválido para appointment_datetime, debe ser RFC3339", http.StatusBadRequest)
-				return
-			}
-			fields["appointment_datetime"] = parsedTime
-		}
-	}
-
 	if val, ok := fields["status_id"]; ok {
 		statusID, ok := val.(float64)
 		if !ok {

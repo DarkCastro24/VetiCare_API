@@ -1,15 +1,14 @@
 package data
 
 import (
+	"PetVet/entities"
 	"errors"
 	"fmt"
-	"log"
-	"os"
-
-	"PetVet/entities"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
+	"log"
+	"os"
 )
 
 var DB *gorm.DB
@@ -17,23 +16,23 @@ var DB *gorm.DB
 func RunPostgresDB() error {
 	dsn := os.Getenv("DATABASE_URL")
 	if dsn == "" {
-		return fmt.Errorf("⚠️ La variable de entorno DATABASE_URL no está configurada")
+		return fmt.Errorf("la variable de entorno DATABASE_URL no está configurada")
 	}
 
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Info),
 	})
 	if err != nil {
-		return fmt.Errorf("❌ Error al conectar a PostgreSQL: %w", err)
+		return fmt.Errorf("error al conectar a PostgreSQL: %w", err)
 	}
 	DB = db
 
 	if err := runMigrations(db); err != nil {
-		return fmt.Errorf("❌ Error en migraciones: %w", err)
+		return fmt.Errorf("error en migraciones: %w", err)
 	}
 
 	if err := seedCatalogs(db); err != nil {
-		log.Printf("⚠️ Advertencia al poblar catálogos: %v\n", err)
+		log.Printf("ocurrio un error al poblar catálogos: %v\n", err)
 	}
 
 	return nil
