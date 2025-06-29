@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"strconv"
 
-	"PetVet/entities"
-	"PetVet/services"
+	"VetiCare/entities"
+	"VetiCare/services"
 	"github.com/gorilla/mux"
 )
 

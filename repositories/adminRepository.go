@@ -4,8 +4,8 @@ import (
 	"errors"
 	"fmt"
 
-	"PetVet/entities"
-	"PetVet/utils"
+	"VetiCare/entities"
+	"VetiCare/utils"
 	"gorm.io/gorm"
 )
 

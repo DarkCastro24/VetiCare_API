@@ -1,8 +1,8 @@
 package repositories
 
 import (
-	"PetVet/entities"
-	"PetVet/utils"
+	"VetiCare/entities"
+	"VetiCare/utils"
 	"errors"
 	"fmt"
 	"gorm.io/gorm"

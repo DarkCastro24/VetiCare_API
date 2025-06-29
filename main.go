@@ -10,11 +10,11 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/rs/cors"
 
-	"PetVet/controllers"
-	"PetVet/data"
-	"PetVet/middlewares"
-	"PetVet/repositories"
-	"PetVet/services"
+	"VetiCare/controllers"
+	"VetiCare/data"
+	"VetiCare/middlewares"
+	"VetiCare/repositories"
+	"VetiCare/services"
 )
 
 func main() {

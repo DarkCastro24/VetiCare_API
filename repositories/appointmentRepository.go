@@ -1,7 +1,7 @@
 package repositories
 
 import (
-	"PetVet/entities"
+	"VetiCare/entities"
 	"errors"
 	"time"
 

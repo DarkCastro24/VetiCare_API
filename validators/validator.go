@@ -1,6 +1,7 @@
 package validators
 
 import (
+	"errors"
 	"regexp"
 	"sync"
 
@@ -76,22 +77,26 @@ func ValidateEmail(email string) error {
 	return nil
 }
 
-func ValidatePassword(password string) error {
-	if password == "" {
-		return nil
-	}
-	if len(password) < 6 {
-		return ErrInvalidPassword
-	}
-	return nil
-}
-
 var (
-	ErrInvalidPassword = NewValidationError("la contraseña debe tener al menos 6 caracteres")
+	reUpper   = regexp.MustCompile(`[A-Z]`)
+	reNumber  = regexp.MustCompile(`[0-9]`)
+	reSpecial = regexp.MustCompile(`[!@#$%^&*]`)
 )
 
-func NewValidationError(msg string) error {
-	return &ValidationError{msg}
+func ValidatePassword(password string) error {
+	if len(password) < 6 {
+		return errors.New("La contraseña debe tener al menos 6 caracteres")
+	}
+	if !reUpper.MatchString(password) {
+		return errors.New("La contraseña debe contener al menos una letra mayúscula")
+	}
+	if !reNumber.MatchString(password) {
+		return errors.New("La contraseña debe contener al menos un número")
+	}
+	if !reSpecial.MatchString(password) {
+		return errors.New("La contraseña debe contener al menos un carácter especial")
+	}
+	return nil
 }
 
 type ValidationError struct {

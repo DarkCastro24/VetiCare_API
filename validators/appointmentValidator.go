@@ -1,7 +1,7 @@
 package validators
 
 import (
-	"PetVet/entities/dto"
+	"VetiCare/entities/dto"
 	"errors"
 	"time"
 
@@ -83,7 +83,7 @@ func ValidateDateTimeNotPast(dateOnly, timeOnly string) error {
 
 func ValidateStatusID(statusID int) error {
 	if statusID < 1 || statusID > 3 {
-		return errors.New("status_id inválido, debe ser un valor válido")
+		return errors.New("Status_id inválido, debe ser un valor numerico")
 	}
 	return nil
 }

@@ -1,9 +1,10 @@
 package controllers
 
 import (
-	"PetVet/entities"
-	"PetVet/entities/dto"
-	"PetVet/services"
+	"VetiCare/entities"
+	"VetiCare/entities/dto"
+	"VetiCare/services"
+	"VetiCare/validators"
 	"encoding/json"
 	"github.com/google/uuid"
 	"github.com/gorilla/mux"
@@ -46,12 +47,8 @@ func (ac *AppointmentController) CreateAppointment(w http.ResponseWriter, r *htt
 		return
 	}
 
-	if _, err := time.Parse("02-01-2006", app.Date); err != nil {
-		http.Error(w, "Formato inválido para date_only, se espera DD-MM-YYYY", http.StatusBadRequest)
-		return
-	}
-	if _, err := time.Parse("15.04", app.Time); err != nil {
-		http.Error(w, "Formato inválido para time_only, se espera HH.MM", http.StatusBadRequest)
+	if err := validators.ValidateAppointmentDTO(app); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
@@ -176,13 +173,25 @@ func (ac *AppointmentController) UpdateAppointment(w http.ResponseWriter, r *htt
 		return
 	}
 
-	if val, ok := fields["status_id"]; ok {
-		statusID, ok := val.(float64)
-		if !ok {
-			http.Error(w, "status_id debe ser numérico", http.StatusBadRequest)
+	if val, ok := fields["date"]; ok {
+		dateStr, ok := val.(string)
+		if !ok || validators.ValidateDateOnly(dateStr) != nil {
+			http.Error(w, "date inválida, debe ser formato DD-MM-YYYY", http.StatusBadRequest)
 			return
 		}
-		if statusID < 1 || statusID > 3 {
+	}
+
+	if val, ok := fields["time"]; ok {
+		timeStr, ok := val.(string)
+		if !ok || validators.ValidateTimeOnly(timeStr) != nil {
+			http.Error(w, "time inválido, debe ser formato HH.MM", http.StatusBadRequest)
+			return
+		}
+	}
+
+	if val, ok := fields["status_id"]; ok {
+		statusID, ok := val.(float64)
+		if !ok || statusID < 1 || statusID > 3 {
 			http.Error(w, "status_id debe ser 1, 2 o 3", http.StatusBadRequest)
 			return
 		}

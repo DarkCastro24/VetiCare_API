@@ -1,10 +1,10 @@
 package controllers
 
 import (
-	"PetVet/entities/dto"
-	"PetVet/services"
-	"PetVet/utils"
-	"PetVet/validators"
+	"VetiCare/entities/dto"
+	"VetiCare/services"
+	"VetiCare/utils"
+	"VetiCare/validators"
 	"encoding/json"
 	"fmt"
 	"github.com/gorilla/mux"

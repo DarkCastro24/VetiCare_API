@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"PetVet/entities"
-	"PetVet/services"
+	"VetiCare/entities"
+	"VetiCare/services"
 	"encoding/json"
 	"github.com/gorilla/mux"
 	"net/http"

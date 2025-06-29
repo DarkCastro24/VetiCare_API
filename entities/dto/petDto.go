@@ -1,7 +1,7 @@
 package dto
 
 import (
-	"PetVet/entities"
+	"VetiCare/entities"
 	"time"
 )
 

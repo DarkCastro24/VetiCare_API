@@ -1,15 +1,15 @@
 package validators
 
 import (
-	"PetVet/entities/dto"
+	"VetiCare/entities/dto"
 	"errors"
 )
 
 var (
-	ErrInvalidFullNameUser = errors.New("nombre completo inválido: solo letras y espacios permitidos")
+	ErrInvalidFullNameUser = errors.New("EL nombre completo debe contener solo letras")
 	ErrInvalidDUIUser      = errors.New("DUI inválido: formato esperado ########-#")
-	ErrInvalidPhoneUser    = errors.New("teléfono inválido: formato esperado ####-####")
-	ErrInvalidEmailUser    = errors.New("correo inválido")
+	ErrInvalidPhoneUser    = errors.New("EL numero de teléfono es inválido, formato esperado ####-####")
+	ErrInvalidEmailUser    = errors.New("LA direccion de correo es invalida")
 )
 
 func ValidateUserDTO(user dto.UserDTO) error {

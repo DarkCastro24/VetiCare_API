@@ -1,6 +1,6 @@
 package dto
 
-import "PetVet/entities"
+import "VetiCare/entities"
 
 type UserRoleDTO struct {
 	ID   int    `json:"id"`

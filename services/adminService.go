@@ -1,10 +1,10 @@
 package services
 
 import (
-	"PetVet/entities"
-	"PetVet/entities/dto"
-	"PetVet/repositories"
-	"PetVet/utils"
+	"VetiCare/entities"
+	"VetiCare/entities/dto"
+	"VetiCare/repositories"
+	"VetiCare/utils"
 	"fmt"
 )
 

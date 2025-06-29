@@ -1,7 +1,7 @@
 package validators
 
 import (
-	"PetVet/entities/dto"
+	"VetiCare/entities/dto"
 	"errors"
 	"time"
 

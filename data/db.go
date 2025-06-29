@@ -1,7 +1,7 @@
 package data
 
 import (
-	"PetVet/entities"
+	"VetiCare/entities"
 	"errors"
 	"fmt"
 	"gorm.io/driver/postgres"

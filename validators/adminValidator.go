@@ -1,17 +1,17 @@
 package validators
 
 import (
-	"PetVet/entities/dto"
+	"VetiCare/entities/dto"
 	"errors"
 )
 
 var (
-	ErrInvalidFullNameAdmin  = errors.New("Nombre completo inválido: solo letras y espacios permitidos")
-	ErrInvalidUsernameAdmin  = errors.New("Nombre de usuario inválido: debe tener entre 3 y 50 caracteres")
-	ErrInvalidDUIAdmin       = errors.New("DUI inválido: formato esperado ########-#")
-	ErrInvalidPhoneAdmin     = errors.New("Teléfono inválido: formato esperado ####-####")
-	ErrInvalidEmailAdmin     = errors.New("Correo inválido")
-	ErrInvalidPasswordAdmin  = errors.New("Contraseña inválida: mínimo 6 caracteres si se proporciona")
+	ErrInvalidFullNameAdmin  = errors.New("El nombre debe contener solo letras")
+	ErrInvalidUsernameAdmin  = errors.New("El nombre de usuario debe tener entre 3 y 50 caracteres")
+	ErrInvalidDUIAdmin       = errors.New("Formato de DUI inválido el formato correcto es ########-#")
+	ErrInvalidPhoneAdmin     = errors.New("Formato de teléfono inválido el formato correcto es ####-####")
+	ErrInvalidEmailAdmin     = errors.New("Direccion de correo inválido")
+	ErrInvalidPasswordAdmin  = errors.New("Contraseña inválida mínimo 6 caracteres")
 	ErrInvalidAdminTypeAdmin = errors.New("Tipo de administrador inválido")
 )
 

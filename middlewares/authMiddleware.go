@@ -1,7 +1,7 @@
 package middlewares
 
 import (
-	"PetVet/utils"
+	"VetiCare/utils"
 	"bytes"
 	"io"
 	"net/http"

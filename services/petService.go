@@ -1,8 +1,8 @@
 package services
 
 import (
-	"PetVet/entities"
-	"PetVet/repositories"
+	"VetiCare/entities"
+	"VetiCare/repositories"
 )
 
 type PetService struct {
