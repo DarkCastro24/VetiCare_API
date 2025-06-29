@@ -78,12 +78,14 @@ func ValidateEmail(email string) error {
 }
 
 var (
-	reUpper   = regexp.MustCompile(`[A-Z]`)
-	reNumber  = regexp.MustCompile(`[0-9]`)
-	reSpecial = regexp.MustCompile(`[!@#$%^&*]`)
+	reUpper  = regexp.MustCompile(`[A-Z]`)
+	reNumber = regexp.MustCompile(`[0-9]`)
 )
 
 func ValidatePassword(password string) error {
+	if password == "" {
+		return nil
+	}
 	if len(password) < 6 {
 		return errors.New("La contraseña debe tener al menos 6 caracteres")
 	}
@@ -92,9 +94,6 @@ func ValidatePassword(password string) error {
 	}
 	if !reNumber.MatchString(password) {
 		return errors.New("La contraseña debe contener al menos un número")
-	}
-	if !reSpecial.MatchString(password) {
-		return errors.New("La contraseña debe contener al menos un carácter especial")
 	}
 	return nil
 }

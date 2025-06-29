@@ -67,7 +67,7 @@ func (uc *UserController) Register(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := uc.Service.Register(&user); err != nil {
-		http.Error(w, "Error al registrar usuario: "+err.Error(), http.StatusInternalServerError)
+		http.Error(w, "El correo o dui ingresados ya estan en uso", http.StatusInternalServerError)
 		return
 	}
 

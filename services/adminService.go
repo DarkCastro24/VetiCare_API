@@ -54,7 +54,7 @@ func (s *AdminService) Login(identifier, pass string) (*entities.Admin, error) {
 func (s *AdminService) Register(input dto.AdminRegisterDTO) (*entities.Admin, string, error) {
 	passwordPlain := input.Password
 	if passwordPlain == "" {
-		passwordPlain = utils.GenerateRandomPassword(16)
+		passwordPlain = utils.GenerateRandomPassword(8)
 	}
 	hash, err := utils.HashPassword(passwordPlain)
 	if err != nil {

@@ -11,7 +11,6 @@ var (
 	ErrInvalidDUIAdmin       = errors.New("Formato de DUI inválido el formato correcto es ########-#")
 	ErrInvalidPhoneAdmin     = errors.New("Formato de teléfono inválido el formato correcto es ####-####")
 	ErrInvalidEmailAdmin     = errors.New("Direccion de correo inválido")
-	ErrInvalidPasswordAdmin  = errors.New("Contraseña inválida mínimo 6 caracteres")
 	ErrInvalidAdminTypeAdmin = errors.New("Tipo de administrador inválido")
 )
 
@@ -46,7 +45,7 @@ func ValidateAdminRegisterDTO(admin dto.AdminRegisterDTO) error {
 		return ErrInvalidEmailAdmin
 	}
 	if err := ValidatePassword(admin.Password); err != nil {
-		return ErrInvalidPasswordAdmin
+		return nil
 	}
 	if err := ValidateAdminTypeID(admin.AdminTypeID); err != nil {
 		return ErrInvalidAdminTypeAdmin

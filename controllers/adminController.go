@@ -45,6 +45,11 @@ func (ac *AdminController) RegisterAdmin(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
+	passwordPlain := input.Password
+	if passwordPlain == "" {
+		passwordPlain = utils.GenerateRandomPassword(8)
+	}
+
 	admin, passwordPlain, err := ac.Service.Register(input)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)

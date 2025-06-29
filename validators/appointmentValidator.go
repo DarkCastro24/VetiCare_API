@@ -56,7 +56,7 @@ func ValidateTimeOnly(timeOnly string) error {
 	if len(timeOnly) != 5 {
 		return ErrInvalidTimeOnly
 	}
-	_, err := time.Parse("15.04", timeOnly)
+	_, err := time.Parse("15:04", timeOnly)
 	if err != nil {
 		return ErrInvalidTimeOnly
 	}
