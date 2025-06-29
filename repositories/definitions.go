@@ -58,6 +58,7 @@ type AppointmentRepository interface {
 	GetMedicalHistoryByPetID(petID string) ([]entities.Appointment, error)
 	GetAppointmentsByStatus(statusID int) ([]entities.Appointment, error)
 	GetAppointmentsByStatusAndDate(date time.Time) ([]entities.Appointment, error)
+	ExistsAppointmentForPet(date, time string) (bool, error)
 
 	CountAppointmentsByStatus(statusID int) (int, error)
 	CountVets() (int, error)

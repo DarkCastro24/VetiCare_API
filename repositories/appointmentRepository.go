@@ -174,3 +174,12 @@ func (r *appointmentRepositoryGORM) CountAttendedByMonthLast6Months() ([]entitie
 
 	return results, err
 }
+
+func (r *appointmentRepositoryGORM) ExistsAppointmentForPet(date, time string) (bool, error) {
+	var count int64
+	err := r.db.
+		Model(&entities.Appointment{}).
+		Where("date = ? AND time = ?", date, time).
+		Count(&count).Error
+	return count > 0, err
+}

@@ -2,32 +2,31 @@ package main
 
 import (
 	"fmt"
+	"github.com/joho/godotenv"
 	"log"
 	"net/http"
-	"os"
-
-	"github.com/gorilla/mux"
-	"github.com/joho/godotenv"
-	"github.com/rs/cors"
 
 	"VetiCare/controllers"
 	"VetiCare/data"
 	"VetiCare/middlewares"
 	"VetiCare/repositories"
 	"VetiCare/services"
+
+	"github.com/gorilla/mux"
+	"github.com/rs/cors"
 )
 
 func main() {
 	err := godotenv.Load()
 	if err != nil {
-		log.Println("Advertencia: no se pudo cargar .env (probablemente en producción)")
+		log.Println("Error al cargar el archivo .env")
 	}
 
 	if err := data.RunPostgresDB(); err != nil {
 		log.Fatal("Error DB:", err)
 	}
 	db := data.DB
-	fmt.Println("✅ Conectado a PostgreSQL con GORM")
+	fmt.Println("Conectado a PostgreSQL con GORM")
 
 	userRepo := repositories.NewUserRepositoryGORM(db)
 	userService := services.NewUserService(userRepo)
@@ -58,6 +57,7 @@ func main() {
 	speciesController := controllers.NewSpeciesController(speciesService)
 
 	r := mux.NewRouter()
+
 	userController.RegisterRoutes(r, middlewares.JWTAuthMiddleware)
 	adminController.RegisterPublicRoutes(r, middlewares.AdminRegisterMiddleware)
 	adminController.RegisterProtectedRoutes(r, middlewares.AdminProtected)
@@ -73,12 +73,9 @@ func main() {
 		AllowedHeaders:   []string{"Authorization", "Content-Type", "X-Admin-Secret"},
 		AllowCredentials: true,
 	})
+
 	handler := c.Handler(r)
 
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = "8080"
-	}
-	fmt.Printf("🚀 Servidor escuchando en http://localhost:%s\n", port)
-	log.Fatal(http.ListenAndServe(":"+port, handler))
+	fmt.Println("Servidor en http://localhost:8080")
+	log.Fatal(http.ListenAndServe(":8080", handler))
 }

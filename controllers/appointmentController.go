@@ -47,28 +47,29 @@ func (ac *AppointmentController) CreateAppointment(w http.ResponseWriter, r *htt
 		return
 	}
 
-	if err := validators.ValidateAppointmentDTO(app); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+	duplicate, err := ac.Service.ExistsAppointmentForPet(app.Date, app.Time)
+	if err != nil {
+		http.Error(w, "Error validando duplicidad: "+err.Error(), http.StatusInternalServerError)
 		return
 	}
-
+	if duplicate {
+		http.Error(w, "Ya existe una cita registrada para esa fecha y hora", http.StatusBadRequest)
+		return
+	}
 	appointment := entities.Appointment{
 		PetID: uuid.MustParse(app.PetID),
 		Date:  app.Date,
 		Time:  app.Time,
 	}
-
 	if err := ac.Service.CreateAppointment(&appointment); err != nil {
 		http.Error(w, "Error creando cita: "+err.Error(), http.StatusInternalServerError)
 		return
 	}
-
 	completeApp, err := ac.Service.GetAppointmentByID(appointment.ID.String())
 	if err != nil {
 		http.Error(w, "Error obteniendo cita creada: "+err.Error(), http.StatusInternalServerError)
 		return
 	}
-
 	json.NewEncoder(w).Encode(dto.NewAppointmentDTO(completeApp))
 }
 
@@ -173,28 +174,67 @@ func (ac *AppointmentController) UpdateAppointment(w http.ResponseWriter, r *htt
 		return
 	}
 
+	var appDTO dto.AppointmentDTO
+
+	if val, ok := fields["pet_id"]; ok {
+		if str, ok := val.(string); ok {
+			appDTO.PetID = str
+		}
+	}
+	if val, ok := fields["vet_id"]; ok {
+		if str, ok := val.(string); ok {
+			appDTO.VetID = &str
+		}
+	}
 	if val, ok := fields["date"]; ok {
-		dateStr, ok := val.(string)
-		if !ok || validators.ValidateDateOnly(dateStr) != nil {
-			http.Error(w, "date inválida, debe ser formato DD-MM-YYYY", http.StatusBadRequest)
-			return
+		if str, ok := val.(string); ok {
+			appDTO.Date = str
 		}
 	}
-
 	if val, ok := fields["time"]; ok {
-		timeStr, ok := val.(string)
-		if !ok || validators.ValidateTimeOnly(timeStr) != nil {
-			http.Error(w, "time inválido, debe ser formato HH.MM", http.StatusBadRequest)
-			return
+		if str, ok := val.(string); ok {
+			appDTO.Time = str
+		}
+	}
+	if val, ok := fields["status_id"]; ok {
+		if v, ok := val.(float64); ok {
+			appDTO.StatusID = int(v)
+		}
+	}
+	if val, ok := fields["weight_kg"]; ok {
+		if v, ok := val.(float64); ok {
+			appDTO.WeightKg = &v
+		}
+	}
+	if val, ok := fields["temperature"]; ok {
+		if v, ok := val.(float64); ok {
+			appDTO.Temperature = &v
+		}
+	}
+	if val, ok := fields["reason"]; ok {
+		if str, ok := val.(string); ok {
+			appDTO.Reason = str
+		}
+	}
+	if val, ok := fields["vaccination_status"]; ok {
+		if str, ok := val.(string); ok {
+			appDTO.VaccinationStatus = str
+		}
+	}
+	if val, ok := fields["medications_prescribed"]; ok {
+		if str, ok := val.(string); ok {
+			appDTO.MedicationsPrescribed = str
+		}
+	}
+	if val, ok := fields["additional_notes"]; ok {
+		if str, ok := val.(string); ok {
+			appDTO.AdditionalNotes = str
 		}
 	}
 
-	if val, ok := fields["status_id"]; ok {
-		statusID, ok := val.(float64)
-		if !ok || statusID < 1 || statusID > 3 {
-			http.Error(w, "status_id debe ser 1, 2 o 3", http.StatusBadRequest)
-			return
-		}
+	if err := validators.ValidateAppointmentDTO(appDTO); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
 	}
 
 	if err := ac.Service.UpdateAppointment(id, fields); err != nil {

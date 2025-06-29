@@ -76,3 +76,7 @@ func (s *AppointmentService) GetVetsWithMostAppointments(limit int) ([]entities.
 func (s *AppointmentService) CountAttendedByMonthLast6Months() ([]entities.MonthlyAppointments, error) {
 	return s.Repo.CountAttendedByMonthLast6Months()
 }
+
+func (s *AppointmentService) ExistsAppointmentForPet(date, time string) (bool, error) {
+	return s.Repo.ExistsAppointmentForPet(date, time)
+}

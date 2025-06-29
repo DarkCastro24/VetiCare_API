@@ -10,16 +10,16 @@ import (
 
 var (
 	ErrInvalidPetID           = errors.New("pet_id es obligatorio y debe ser un UUID válido")
-	ErrInvalidVetID           = errors.New("vet_id debe ser un UUID válido si se proporciona")
-	ErrInvalidDateOnly        = errors.New("date_only es obligatorio y debe tener formato DD-MM-YYYY")
-	ErrInvalidTimeOnly        = errors.New("time_only es obligatorio y debe tener formato HH.MM")
+	ErrInvalidVetID           = errors.New("vet_id debe ser un UUID válido")
+	ErrInvalidDateOnly        = errors.New("la fecha es obligatoria y debe tener formato DD-MM-YYYY")
+	ErrInvalidTimeOnly        = errors.New("la hora es obligatoria y debe tener formato HH.MM")
 	ErrInvalidDateTimeInPast  = errors.New("la fecha y hora de la cita no pueden ser en el pasado")
-	ErrInvalidWeight          = errors.New("weight_kg debe ser un número positivo si se proporciona")
-	ErrInvalidTemperature     = errors.New("temperature debe ser un número positivo si se proporciona")
-	ErrInvalidReasonLength    = errors.New("reason debe tener máximo 300 caracteres")
-	ErrInvalidVaccinationLen  = errors.New("vaccination_status debe tener máximo 500 caracteres")
-	ErrInvalidMedicationsLen  = errors.New("medications_prescribed debe tener máximo 300 caracteres")
-	ErrInvalidAdditionalNotes = errors.New("additional_notes debe tener máximo 500 caracteres")
+	ErrInvalidWeight          = errors.New("el peso debe ser un número positivo")
+	ErrInvalidTemperature     = errors.New("la temperatura debe ser un número positivo")
+	ErrInvalidReasonLength    = errors.New("la razón debe tener máximo 300 caracteres")
+	ErrInvalidVaccinationLen  = errors.New("El estado de vacunacion debe tener máximo 500 caracteres")
+	ErrInvalidMedicationsLen  = errors.New("Las medicaciones deben tener máximo 300 caracteres")
+	ErrInvalidAdditionalNotes = errors.New("Las notas adicionales deben tener máximo 500 caracteres")
 )
 
 func ValidateUUIDRequired(id string) error {
@@ -41,22 +41,28 @@ func ValidateUUIDOptional(id *string) error {
 	return nil
 }
 
-func ValidateDateOnly(dateOnly string) error {
-	if len(dateOnly) != 10 {
+func ValidateDate(date string) error {
+	if date == "" {
+		return nil
+	}
+	if len(date) != 10 {
 		return ErrInvalidDateOnly
 	}
-	_, err := time.Parse("02-01-2006", dateOnly)
+	_, err := time.Parse("02-01-2006", date)
 	if err != nil {
 		return ErrInvalidDateOnly
 	}
 	return nil
 }
 
-func ValidateTimeOnly(timeOnly string) error {
-	if len(timeOnly) != 5 {
+func ValidateTime(timeStr string) error {
+	if timeStr == "" {
+		return nil
+	}
+	if len(timeStr) != 5 {
 		return ErrInvalidTimeOnly
 	}
-	_, err := time.Parse("15:04", timeOnly)
+	_, err := time.Parse("15:04", timeStr)
 	if err != nil {
 		return ErrInvalidTimeOnly
 	}
@@ -88,14 +94,17 @@ func ValidateStatusID(statusID int) error {
 	return nil
 }
 
-func ValidatePositiveFloatOptional(value *float64, errMsg error) error {
+func ValidatePositiveFloat(value *float64, errMsg error) error {
 	if value != nil && *value < 0 {
 		return errMsg
 	}
 	return nil
 }
 
-func ValidateMaxLenOptional(s string, max int, errMsg error) error {
+func ValidateMaxLen(s string, max int, errMsg error) error {
+	if s == "" {
+		return nil
+	}
 	if len(s) > max {
 		return errMsg
 	}
@@ -109,34 +118,36 @@ func ValidateAppointmentDTO(app dto.AppointmentDTO) error {
 	if err := ValidateUUIDOptional(app.VetID); err != nil {
 		return ErrInvalidVetID
 	}
-	if err := ValidateDateOnly(app.Date); err != nil {
+	if err := ValidateDate(app.Date); err != nil {
 		return err
 	}
-	if err := ValidateTimeOnly(app.Time); err != nil {
+	if err := ValidateTime(app.Time); err != nil {
 		return err
 	}
-	if err := ValidateDateTimeNotPast(app.Date, app.Time); err != nil {
-		return err
+	if app.Date != "" && app.Time != "" {
+		if err := ValidateDateTimeNotPast(app.Date, app.Time); err != nil {
+			return err
+		}
 	}
 	if err := ValidateStatusID(app.StatusID); err != nil {
 		return err
 	}
-	if err := ValidatePositiveFloatOptional(app.WeightKg, ErrInvalidWeight); err != nil {
+	if err := ValidatePositiveFloat(app.WeightKg, ErrInvalidWeight); err != nil {
 		return err
 	}
-	if err := ValidatePositiveFloatOptional(app.Temperature, ErrInvalidTemperature); err != nil {
+	if err := ValidatePositiveFloat(app.Temperature, ErrInvalidTemperature); err != nil {
 		return err
 	}
-	if err := ValidateMaxLenOptional(app.Reason, 300, ErrInvalidReasonLength); err != nil {
+	if err := ValidateMaxLen(app.Reason, 300, ErrInvalidReasonLength); err != nil {
 		return err
 	}
-	if err := ValidateMaxLenOptional(app.VaccinationStatus, 500, ErrInvalidVaccinationLen); err != nil {
+	if err := ValidateMaxLen(app.VaccinationStatus, 500, ErrInvalidVaccinationLen); err != nil {
 		return err
 	}
-	if err := ValidateMaxLenOptional(app.MedicationsPrescribed, 300, ErrInvalidMedicationsLen); err != nil {
+	if err := ValidateMaxLen(app.MedicationsPrescribed, 300, ErrInvalidMedicationsLen); err != nil {
 		return err
 	}
-	if err := ValidateMaxLenOptional(app.AdditionalNotes, 500, ErrInvalidAdditionalNotes); err != nil {
+	if err := ValidateMaxLen(app.AdditionalNotes, 500, ErrInvalidAdditionalNotes); err != nil {
 		return err
 	}
 	return nil
