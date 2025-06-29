@@ -83,7 +83,17 @@ func (ac *AdminController) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token, _ := utils.GenerateJWT(admin.ID.String(), admin.Email)
+	if admin.StatusID != 1 {
+		http.Error(w, "Administrador desactivado, no puede iniciar sesión", http.StatusUnauthorized)
+		return
+	}
+
+	token, err := utils.GenerateJWT(admin.ID.String(), admin.Email)
+	if err != nil {
+		http.Error(w, "No se pudo generar el token: "+err.Error(), http.StatusInternalServerError)
+		return
+	}
+
 	resp := map[string]interface{}{
 		"admin": dto.ToAdminDTO(admin),
 		"token": token,

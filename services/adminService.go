@@ -34,19 +34,19 @@ func (s *AdminService) Delete(id string) (string, error) {
 func (s *AdminService) Login(identifier, pass string) (*entities.Admin, error) {
 	admin, err := s.Repo.GetByEmail(identifier)
 	if err != nil {
-		return nil, fmt.Errorf("error al buscar administrador")
+		return nil, fmt.Errorf("ocurrio un error al buscar administrador")
 	}
 	if admin == nil {
 		admin, err = s.Repo.GetByUsername(identifier)
 		if err != nil {
-			return nil, fmt.Errorf("error al buscar administrador")
+			return nil, fmt.Errorf("ocurrio un error al buscar administrador")
 		}
 		if admin == nil {
-			return nil, fmt.Errorf("credenciales inválidas")
+			return nil, fmt.Errorf("las credenciales ingresadas son inválidas")
 		}
 	}
 	if !utils.CheckPasswordHash(pass, admin.PasswordHash) {
-		return nil, fmt.Errorf("credenciales inválidas")
+		return nil, fmt.Errorf("las credenciales ingresadas son inválidas")
 	}
 	return admin, nil
 }

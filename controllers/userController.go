@@ -50,7 +50,9 @@ func (uc *UserController) Register(w http.ResponseWriter, r *http.Request) {
 	if passwordPlain == "" {
 		passwordPlain = utils.GenerateRandomPassword(8)
 	}
+
 	hashedPassword, err := utils.HashPassword(passwordPlain)
+	
 	if err != nil {
 		http.Error(w, "Error al hashear contraseña", http.StatusInternalServerError)
 		return
@@ -146,7 +148,11 @@ func (uc *UserController) Login(w http.ResponseWriter, r *http.Request) {
 	}
 	user, err := uc.Service.Login(input.Email, input.Password)
 	if err != nil {
-		http.Error(w, "Credenciales invalidas: "+err.Error(), http.StatusUnauthorized)
+		http.Error(w, "Credenciales inválidas: "+err.Error(), http.StatusUnauthorized)
+		return
+	}
+	if user.StatusID != 1 {
+		http.Error(w, "Su usuario esta desactivado, no puede iniciar sesión", http.StatusUnauthorized)
 		return
 	}
 	token, err := utils.GenerateJWT(user.ID.String(), user.Email)
