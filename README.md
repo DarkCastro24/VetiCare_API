@@ -38,8 +38,6 @@ Se incluye el archivo `.env.example` como referencia para definir tus variables 
 
 **Diego Eduardo Castro Quintanilla**  
 Carnet: 00117322  
-UCA | 2025
+UCA 2025
 
----
 
-Este proyecto refleja la implementación práctica de una arquitectura limpia, escalable y mantenible con Go.
