@@ -1,14 +1,14 @@
-# VetiCare_API 🐾
+# VetiCare_API 
 
 **VetiCare_API** es una API RESTful desarrollada en lenguaje Go con arquitectura en capas. Este proyecto fue creado como parte de la asignatura de **Programación N-Capas** en la Universidad Centroamericana José Simeón Cañas (UCA).
 
-## 📌 Descripción
+## Descripción
 
 La API gestiona las funcionalidades básicas de un sistema de veterinaria, implementando buenas prácticas como separación de responsabilidades, validaciones, servicios reutilizables y middleware.
 
-## ⚙️ Tecnologías
+## Tecnologías
 
-- **Lenguaje**: Go 🟦
+- **Lenguaje**: Go 
 - **Estilo de arquitectura**: RESTful API en capas
 - **Gestión de dependencias**: `go mod`
 - **Despliegue**: Puede desplegarse localmente o en servicios cloud
@@ -16,7 +16,7 @@ La API gestiona las funcionalidades básicas de un sistema de veterinaria, imple
 - **Bycrypt**: Utilizado para encriptacion de
 - **Deploy**: Sistema desplegado en la nube mediante Vercel y Railway.
   
-## 🧱 Arquitectura por Capas
+## Arquitectura por Capas
 
 El proyecto está organizado en las siguientes carpetas:
 
@@ -30,13 +30,13 @@ El proyecto está organizado en las siguientes carpetas:
 - `utils/`: Funciones auxiliares reutilizables.
 - `main.go`: Punto de entrada de la aplicación.
 
-## 🔐 Variables de entorno
+## Variables de entorno
 
 Se incluye el archivo `.env.example` como referencia para definir tus variables de configuración necesarias (puerto, DB, etc.).
 
-## 👨‍💻 Autor
+## Autor
 
-**Diego Eduardo Castro Quintanilla**  
+**Diego Eduardo Castro Quintanilla** 
 Carnet: 00117322  
 UCA 2025
 
